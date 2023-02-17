@@ -26,28 +26,38 @@ export default {
         }
     },
     methods: {
+        makeToast(variant, msg) {
+            this.$bvToast.toast(msg, {
+                autoHideDelay: 3000,
+                variant: variant,
+                // solid: true,
+                toaster: 'b-toaster-top-center',
+                noCloseButton: true
+            })
+        },
+
         fileChange(e) {
             // console.log(e.target.files);
             this.image = e.target.files[0]
         },
         handleSubmit(e) {
             e.preventDefault()
-            const data={
-                image:this.image,
-                caption:this.caption
-            }
+            // const data = {
+            //     image: this.image,
+            //     caption: this.caption
+            // }
             const formdata = new FormData()
-            console.log(typeof data.image);
             formdata.append('image', this.image)
-            // formdata.append('caption', this.caption)
-            api.post('app', data)
-            .then(res=>{
-                console.log(res.data.data);
-            })
-            .catch(err=>{
-                console.log("formdata:", formdata);
-                console.log(err);
-            })
+            formdata.append('caption', this.caption)
+            api.post('app', formdata    , { headers: { "Content-type": "multipart/formdata" } })
+                .then(res => {
+                    console.log(res.data);
+                    this.makeToast('success', res.data.message)
+                })
+                .catch(err => {
+                    console.log("formdata:", formdata);
+                    console.log(err);
+                })
         }
     }
 }
