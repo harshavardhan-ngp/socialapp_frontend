@@ -46,7 +46,7 @@ export default {
             //     image: this.image,
             //     caption: this.caption
             // }
-            const formdata = new FormData()
+            let formdata = new FormData()
             formdata.append('image', this.image)
             formdata.append('caption', this.caption)
             api.post('app', formdata    , { headers: { "Content-type": "multipart/formdata" } })
@@ -54,6 +54,7 @@ export default {
                     console.log(res.data);
                     this.image=[]
                     this.caption=''
+                    formdata={}
                     this.makeToast('success', res.data.message)
                 })
                 .catch(err => {
