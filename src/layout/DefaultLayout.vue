@@ -6,6 +6,7 @@
                     <b-nav tabs justified>
                         <b-nav-item to="/post" exact exact-active-class="navtab active ">Post</b-nav-item>
                         <b-nav-item to="/add" exact exact-active-class="navtab active ">Add</b-nav-item>
+                        <b-nav-item  exact exact-active-class="navtab active" @click="logout">Logout</b-nav-item>
                     </b-nav>
                 </b-container>
 
@@ -21,6 +22,12 @@
 <script>
 export default {
     name: 'DefaultLayout',
+    methods:{
+        logout(){
+            localStorage.removeItem('auth')
+            this.$router.push('/')
+        }
+    }
 }
 </script>
 

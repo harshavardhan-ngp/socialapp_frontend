@@ -11,18 +11,18 @@
                         <div v-if="!registerActive" class="card">
                             <h1 class="header">Sign In</h1>
                             <form class="form-group">
-                                <input v-model="loginData.email" type="email" class="form-control"
-                                    :class="isSubmitted && (!$v.loginData.email.required || !$v.loginData.email.email) ? 'errBorder' : ''"
+                                <input v-model="login.email" type="email" class="form-control"
+                                    :class="isSubmitted && (!$v.login.email.required || !$v.login.email.email) ? 'errBorder' : ''"
                                     placeholder="Email" required />
-                                <div v-if="isSubmitted && !$v.loginData.email.required" class="errorLogin">Email is
+                                <div v-if="isSubmitted && !$v.login.email.required" class="errorLogin">Email is
                                     required</div>
 
-                                <input v-model="loginData.password" type="password" class="form-control"
+                                <input v-model="login.password" type="password" class="form-control"
                                     placeholder="Password" required />
-                                <div v-if="isSubmitted && !$v.loginData.email.required" class="errorLogin">Password is
+                                <div v-if="isSubmitted && !$v.login.email.required" class="errorLogin">Password is
                                     required</div>
 
-                                <input type="submit" class="btn btn-primary" @click="login" />
+                                <input type="submit" class="btn btn-primary" @click="handleLogin" />
                                 <p class="mt-4">Don't have an account? <span
                                         @click="registerActive = !registerActive, isSubmitted = false">Sign up here</span>
                                 </p>
@@ -32,20 +32,20 @@
                         <div v-else class="card">
                             <h1 class="header">Sign Up</h1>
                             <form class="form-group">
-                                <input v-model="regData.email" type="email"
-                                    :class="isSubmitted && (!$v.regData.email.required || !$v.regData.email.email) ? 'errBorder' : ''"
+                                <input v-model="reg.email" type="email"
+                                    :class="isSubmitted && (!$v.reg.email.required || !$v.reg.email.email) ? 'errBorder' : ''"
                                     class="form-control" placeholder="Email" required />
-                                <div v-if="isSubmitted && !$v.regData.email.required" class="errorLogin">Email is
+                                <div v-if="isSubmitted && !$v.reg.email.required" class="errorLogin">Email is
                                     required</div>
 
-                                <input v-model="regData.password" type="password"
-                                    :class="isSubmitted && (!$v.regData.password.required || !$v.regData.password.minLength) ? 'errBorder' : ''"
+                                <input v-model="reg.password" type="password"
+                                    :class="isSubmitted && (!$v.reg.password.required || !$v.reg.password.minLength) ? 'errBorder' : ''"
                                     class="form-control" placeholder="Password" required />
-                                <div v-if="isSubmitted && !$v.regData.password.required" class="errorLogin">Password is
+                                <div v-if="isSubmitted && !$v.reg.password.required" class="errorLogin">Password is
                                     required</div>
-                                <div v-if="isSubmitted && !$v.regData.password.minLength" class="errorLogin">Password
+                                <div v-if="isSubmitted && !$v.reg.password.minLength" class="errorLogin">Password
                                     must contain 8 letters</div>
-                                <div v-if="isSubmitted && !$v.regData.password.valid" class="errorLogin">Password must
+                                <div v-if="isSubmitted && !$v.reg.password.valid" class="errorLogin">Password must
                                     contain atleast
                                     <ul>
                                         <li>a Uppercase</li>
@@ -55,12 +55,12 @@
                                     </ul>
                                 </div>
 
-                                <input v-model="regData.confirmPass" type="password"
-                                    :class="isSubmitted && (!$v.regData.confirmPass.required || !$v.regData.confirmPass.sameAsPassword) ? 'errBorder' : ''"
+                                <input v-model="reg.confirmPass" type="password"
+                                    :class="isSubmitted && (!$v.reg.confirmPass.required || !$v.reg.confirmPass.sameAsPassword) ? 'errBorder' : ''"
                                     class="form-control" placeholder="Confirm Password" required />
-                                <div v-if="isSubmitted && !$v.regData.confirmPass.required" class="errorLogin">Confirm
+                                <div v-if="isSubmitted && !$v.reg.confirmPass.required" class="errorLogin">Confirm
                                     Password is required</div>
-                                <div v-if="isSubmitted && !$v.regData.confirmPass.sameAsPassword" class="errorLogin">
+                                <div v-if="isSubmitted && !$v.reg.confirmPass.sameAsPassword" class="errorLogin">
                                     Mismatched Pasword</div>
 
                                 <input type="submit" class="btn btn-primary" @click="register" />
@@ -89,11 +89,11 @@ export default {
     name: 'LoginPage',
     data() {
         return {
-            loginData: {
+            login: {
                 email: "",
                 password: "",
             },
-            regData: {
+            reg: {
                 email: "",
                 password: "",
                 confirmPass: "",
@@ -104,7 +104,7 @@ export default {
         }
     },
     validations: {
-        loginData: {
+        login: {
             email: {
                 required,
                 email,
@@ -115,7 +115,7 @@ export default {
             },
         },
 
-        regData: {
+        reg: {
             email: {
                 required,
                 email,
@@ -147,16 +147,16 @@ export default {
             })
         },
 
-        async login(e) {
+        async handleLogin(e) {
             e.preventDefault()
             this.isSubmitted = true
-            if (this.$v.loginData.$invalid) {
+            if (this.$v.login.$invalid) {
                 console.log(this.$v);
                 return
             }
-            console.log('login:', this.loginData);
+            console.log('login:', this.login);
             this.isSubmitted = false
-            const logged = await api.post('login', this.loginData)
+            const logged = await api.post('login', this.login)
 
             console.log("logged:", logged);
             if (logged.data.success) {
@@ -173,13 +173,13 @@ export default {
         async register(e) {
             e.preventDefault()
             this.isSubmitted = true
-            if (this.$v.regData.$invalid) {
+            if (this.$v.reg.$invalid) {
                 console.log(this.$v);
                 return false
             }
 
             this.isSubmitted = false
-            const registered = await api.post('register', this.regData)
+            const registered = await api.post('register', this.reg)
             console.log("registered:", registered);
             if (registered.data.success) {
                 localStorage.setItem('auth', registered.data.accessToken)
