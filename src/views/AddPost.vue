@@ -52,6 +52,8 @@ export default {
             api.post('app', formdata    , { headers: { "Content-type": "multipart/formdata" } })
                 .then(res => {
                     console.log(res.data);
+                    this.image=[]
+                    this.caption=''
                     this.makeToast('success', res.data.message)
                 })
                 .catch(err => {
